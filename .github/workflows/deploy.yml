@@ -1,0 +1,39 @@
+#TODO: What is this line of code doing
+
+# sets name of workflow
+
+name: Deploy
+
+#TODO: What is this block of code doing
+
+# defines when workflow should run (runs when theres a push to main branch & when a pull request is open or updated)
+
+on:
+    push:
+      branches: [main]
+    pull_request:
+      branches:
+        - main
+        
+#TODO: What is this block of code doing   
+
+# defines a job 
+
+jobs:
+    ci:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Test
+          run: |
+            npm install
+            npm run test
+
+        - name: Deploy
+          if: github.ref == 'refs/heads/main'
+          env:
+            DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          run: |
+            curl "$DEPLOY_URL"
+   
